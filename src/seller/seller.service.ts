@@ -18,4 +18,16 @@ export class SellerService {
 
     return user;
   }
+
+  async updateAutoApprove(userId: number, autoApprove: number) {
+    const user = await this.sellerRepository.findOneBy({ id: userId });
+    if (!user) {
+      throw new BadRequestException('존재하지 않는 사용자입니다.');
+    }
+
+    user.autoApprove = autoApprove;
+    await this.sellerRepository.update({ id: userId }, { autoApprove });
+
+    return user;
+  }
 }
