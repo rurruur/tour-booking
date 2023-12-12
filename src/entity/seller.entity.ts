@@ -30,6 +30,8 @@ export class Seller {
   @Column({ type: 'json', nullable: true, default: null })
   offDay: string[];
 
+  // TODO: 활성화/비활성화 기능 추가
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -38,4 +40,12 @@ export class Seller {
 
   @DeleteDateColumn({ nullable: true })
   deletedAt: Date;
+
+  /** 입력된 날짜가 휴무일인지 확인 */
+  isOffDate(date: string): boolean {
+    if (!this.offDate?.length) {
+      return false;
+    }
+    return this.offDate.includes(date);
+  }
 }
