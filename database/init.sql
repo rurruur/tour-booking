@@ -16,3 +16,17 @@ CREATE TABLE `seller` (
   `deleted_at` timestamp,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `booking` (
+	`id` int NOT NULL AUTO_INCREMENT,
+	`seller_id` int NOT NULL,
+	`status` varchar(50) NOT NULL COMMENT '예약상태',
+	`email` varchar(255) NOT NULL,
+	`name` varchar(50) NOT NULL,
+	`date` date NOT NULL COMMENT '예약일',
+	`created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`deleted_at` timestamp,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`seller_id`) REFERENCES `seller` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
