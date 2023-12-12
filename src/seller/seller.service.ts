@@ -16,6 +16,10 @@ export class SellerService {
     return user;
   }
 
+  async getSellers() {
+    return this.sellerRepository.find();
+  }
+
   async create(email: string, name: string) {
     const foundUser = await this.sellerRepository.findOneBy({ email });
     if (foundUser) {

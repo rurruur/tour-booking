@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { CreateSellerDto } from './dto/create-seller.dto';
 import { UpdateAutoApprove } from './dto/update-auto-approve.dto';
 import { UpdateOff } from './dto/update-off.dto';
@@ -7,6 +7,11 @@ import { SellerService } from './seller.service';
 @Controller('seller')
 export class SellerController {
   constructor(private readonly sellerService: SellerService) {}
+
+  @Get()
+  async getSellers() {
+    return this.sellerService.getSellers();
+  }
 
   @Post()
   async create(@Body() { email, name }: CreateSellerDto) {
