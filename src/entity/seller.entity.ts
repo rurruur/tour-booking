@@ -1,5 +1,15 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
+export enum OffDay {
+  MON = 'MON',
+  TUE = 'TUE',
+  WED = 'WED',
+  THU = 'THU',
+  FRI = 'FRI',
+  SAT = 'SAT',
+  SUN = 'SUN',
+}
+
 @Entity()
 export class Seller {
   @PrimaryGeneratedColumn()
@@ -15,10 +25,10 @@ export class Seller {
   autoApprove: number;
 
   @Column({ type: 'json', nullable: true, default: null })
-  offDate: boolean;
+  offDate: string[];
 
   @Column({ type: 'json', nullable: true, default: null })
-  offDay: boolean;
+  offDay: string[];
 
   @CreateDateColumn()
   createdAt: Date;
