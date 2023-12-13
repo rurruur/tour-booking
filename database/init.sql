@@ -18,7 +18,7 @@ CREATE TABLE `seller` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `booking` (
-	`id` int NOT NULL AUTO_INCREMENT,
+	`id` varchar(36) NOT NULL DEFAULT (UUID()),
 	`seller_id` int NOT NULL,
 	`status` varchar(50) NOT NULL COMMENT '예약상태',
 	`email` varchar(255) NOT NULL,
