@@ -30,3 +30,6 @@ CREATE TABLE `booking` (
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`seller_id`) REFERENCES `seller` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 예약 테이블: 고객 이메일 인덱스 추가
+CREATE INDEX booking_email_IDX USING BTREE ON booking_dev.booking (email);
