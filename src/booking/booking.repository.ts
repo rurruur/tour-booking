@@ -9,8 +9,8 @@ export class BookingRepository extends Repository<Booking> {
     super(repository.target, repository.manager, repository.queryRunner);
   }
 
-  async findOrThrow(bookingId: number, email?: string) {
-    const booking = await this.findOneBy({ id: bookingId, email });
+  async findOrThrow(bookingId: number, options?: { email?: string; sellerId?: number }) {
+    const booking = await this.findOneBy({ id: bookingId, ...options });
     if (!booking) {
       throw new BadRequestException('존재하지 않는 예약입니다.');
     }

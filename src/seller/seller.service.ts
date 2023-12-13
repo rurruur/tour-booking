@@ -1,9 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { BookingRepository } from '../booking/booking.repository';
+import { BookingService } from '../booking/booking.service';
+import { BookingStatus } from '../entity/booking.entity';
 import { SellerRepository } from './seller.repository';
 
 @Injectable()
 export class SellerService {
-  constructor(private readonly sellerRepository: SellerRepository) {}
+  constructor(
+    private readonly sellerRepository: SellerRepository,
+    private readonly bookingRepository: BookingRepository,
+    private readonly bookingService: BookingService,
+  ) {}
 
   async getSellers() {
     return this.sellerRepository.getSellers();
@@ -37,5 +44,11 @@ export class SellerService {
     await this.sellerRepository.update({ id: userId }, off);
 
     return { ...user, ...off };
+  }
+
+  async updateBookingStatus(sellerId: number, bookingId: number, status: BookingStatus) {
+    const booking = await this.bookingRepository.findOrThrow(bookingId, { sellerId });
+
+    return this.bookingService.updateBookingStatus(booking, status);
   }
 }

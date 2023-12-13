@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CreateSellerDto } from './dto/create-seller.dto';
 import { UpdateAutoApprove } from './dto/update-auto-approve.dto';
+import { UpdateBookingStatusDto } from './dto/update-booking.dto';
 import { UpdateOff } from './dto/update-off.dto';
 import { SellerService } from './seller.service';
 
@@ -26,5 +27,10 @@ export class SellerController {
   @Patch('off')
   async updateOff(@Body() { userId, offDate, offDay }: UpdateOff) {
     return this.sellerService.updateOff(userId, offDate, offDay);
+  }
+
+  @Patch('booking/:bookingId')
+  async updateBookingStatus(@Param('bookingId') bookingId: number, @Body() { userId, status }: UpdateBookingStatusDto) {
+    return this.sellerService.updateBookingStatus(userId, bookingId, status);
   }
 }
