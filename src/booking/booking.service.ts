@@ -64,6 +64,15 @@ export class BookingService {
     }
 
     const newBooking = this.bookingRepository.create({ sellerId, date, email, name });
+    const sellerBookings = await this.bookingRepository.findBy({
+      sellerId,
+      date,
+      status: In([BookingStatus.PENDING, BookingStatus.APPROVED]),
+    });
+    if (sellerBookings.length < seller.autoApprove) {
+      newBooking.status = BookingStatus.APPROVED;
+    }
+
     await this.bookingRepository.insert(newBooking);
 
     return newBooking.id;
