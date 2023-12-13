@@ -66,7 +66,7 @@ export class BookingService {
     const newBooking = this.bookingRepository.create({ sellerId, date, email, name });
     await this.bookingRepository.insert(newBooking);
 
-    return newBooking;
+    return newBooking.id;
   }
 
   async cancelBooking(bookingId: string, email: string) {
