@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { CancelBookingDto } from './dto/cancel-booking.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -17,8 +17,8 @@ export class BookingController {
     return this.bookingService.createBooking(sellerId, date, email, name);
   }
 
-  @Post('cancel')
-  async cancelBooking(@Body() { bookingId, email }: CancelBookingDto) {
+  @Post(':bookingId/cancel')
+  async cancelBooking(@Param('bookingId') bookingId: number, @Body() { email }: CancelBookingDto) {
     return this.bookingService.cancelBooking(bookingId, email);
   }
 }
