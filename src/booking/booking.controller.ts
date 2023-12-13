@@ -1,5 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { BookingService } from './booking.service';
+import { CreateBookingDto } from './dto/create-booking.dto';
 
 @Controller('booking')
 export class BookingController {
@@ -8,5 +9,10 @@ export class BookingController {
   @Get()
   async getAvailableSlot(@Query('year') year: number, @Query('month') month: number) {
     return this.bookingService.getAvailableSlot(year, month);
+  }
+
+  @Post()
+  async createBooking(@Body() { sellerId, date, email, name }: CreateBookingDto) {
+    return this.bookingService.createBooking(sellerId, date, email, name);
   }
 }

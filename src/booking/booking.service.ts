@@ -1,15 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import dayjs from 'dayjs';
 import { Repository } from 'typeorm';
 import { Booking } from '../entity/booking.entity';
-import { Seller } from '../entity/seller.entity';
+import { SellerService } from '../seller/seller.service';
 
 @Injectable()
 export class BookingService {
   constructor(
     @InjectRepository(Booking) private readonly bookingRepository: Repository<Booking>,
-    @InjectRepository(Seller) private readonly sellerRepository: Repository<Seller>,
+    private readonly sellerService: SellerService,
   ) {}
 
   // TODO: 지난 날짜는 조회 불가능
@@ -24,7 +24,7 @@ export class BookingService {
       slots.set(targetDate.add(i, 'day').format('YYYY-MM-DD'), []);
     }
 
-    const sellers = await this.sellerRepository.find();
+    const sellers = await this.sellerService.getSellers();
     for (const seller of sellers) {
       for (let i = 0; i < daysInMonth; i++) {
         const currentDate = targetDate.add(i, 'day');
@@ -37,5 +37,30 @@ export class BookingService {
     }
 
     return Array.from(slots, ([date, sellers]) => ({ date, sellers }));
+  }
+
+  /**
+   * 오늘 이전 날짜는 예약 불가능
+   * 신청한 이메일로 동일 날짜에 예약한 내역이 있을 경우 오류 발생
+   */
+  async createBooking(sellerId: number, date: string, email: string, name: string) {
+    if (dayjs(date).isBefore(dayjs(), 'day')) {
+      throw new BadRequestException('오늘 이전 날짜는 예약할 수 없습니다.');
+    }
+
+    const prevBooking = await this.bookingRepository.findOneBy({ sellerId, date, email });
+    if (prevBooking) {
+      throw new BadRequestException('이미 예약된 시간입니다.');
+    }
+
+    const seller = await this.sellerService.findOrThrow(sellerId);
+    if (seller.isOff(date)) {
+      throw new BadRequestException('판매자의 휴무일입니다.');
+    }
+
+    const newBooking = this.bookingRepository.create({ sellerId, date, email, name });
+    await this.bookingRepository.insert(newBooking);
+
+    return newBooking;
   }
 }

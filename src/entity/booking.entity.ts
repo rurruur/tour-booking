@@ -14,8 +14,8 @@ export class Booking {
   @Column({ type: 'int' })
   sellerId: number;
 
-  @Column({ type: 'varchar', length: 50, enum: BookingStatus, default: BookingStatus.PENDING })
-  status: string;
+  @Column({ type: 'varchar', length: 50, enum: BookingStatus })
+  status: string = BookingStatus.PENDING;
 
   @Column({ type: 'varchar', length: 255 })
   email: string;
