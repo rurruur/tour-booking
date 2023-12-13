@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
+import _ from 'lodash';
 import { In, MoreThan } from 'typeorm';
 import { BookingRepository } from '../booking/booking.repository';
 import { BookingService } from '../booking/booking.service';
@@ -63,18 +64,14 @@ export class SellerService {
       date: MoreThan(dayjs().format('YYYY-MM-DD')),
       status: In([BookingStatus.PENDING, BookingStatus.APPROVED]),
     });
-
-    const approvedBookings = bookings.filter((b) => b.status === BookingStatus.APPROVED);
-    if (approvedBookings.some((b) => user.isOff(b.date))) {
+    const [approvedBookings, pendingBookings] = _.partition(
+      bookings.filter((b) => user.isOff(b.date)),
+      (b) => b.status === BookingStatus.APPROVED,
+    );
+    if (approvedBookings.length) {
       throw new BadRequestException('확정된 예약이 있는 날은 휴무일로 지정할 수 없습니다.');
     }
-
-    const pendingBookings = bookings.filter((b) => b.status === BookingStatus.PENDING);
-    pendingBookings.forEach((b) => {
-      if (user.isOff(b.date)) {
-        this.bookingService.updateBookingStatus(b, BookingStatus.REJECTED);
-      }
-    });
+    await Promise.all(pendingBookings.map((b) => this.bookingService.updateBookingStatus(b, BookingStatus.REJECTED)));
 
     await this.sellerRepository.update({ id: userId }, user);
 
