@@ -1,23 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Seller } from '../entity/seller.entity';
+import { SellerRepository } from './seller.repository';
 
 @Injectable()
 export class SellerService {
-  constructor(@InjectRepository(Seller) private readonly sellerRepository: Repository<Seller>) {}
-
-  async findOrThrow(userId: number) {
-    const user = await this.sellerRepository.findOneBy({ id: userId });
-    if (!user) {
-      throw new BadRequestException('존재하지 않는 사용자입니다.');
-    }
-
-    return user;
-  }
+  constructor(private readonly sellerRepository: SellerRepository) {}
 
   async getSellers() {
-    return this.sellerRepository.find();
+    return this.sellerRepository.getSellers();
   }
 
   async create(email: string, name: string) {
@@ -33,7 +22,7 @@ export class SellerService {
   }
 
   async updateAutoApprove(userId: number, autoApprove: number) {
-    const user = await this.findOrThrow(userId);
+    const user = await this.sellerRepository.findOrThrow(userId);
 
     user.autoApprove = autoApprove;
     await this.sellerRepository.update({ id: userId }, { autoApprove });
@@ -42,7 +31,7 @@ export class SellerService {
   }
 
   async updateOff(userId: number, offDate?: string[], offDay?: string[]) {
-    const user = await this.findOrThrow(userId);
+    const user = await this.sellerRepository.findOrThrow(userId);
     const off = Object.assign({}, { ...(offDate?.length && { offDate }), ...(offDay?.length && { offDay }) });
 
     await this.sellerRepository.update({ id: userId }, off);

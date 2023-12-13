@@ -1,16 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import dayjs from 'dayjs';
-import { Repository } from 'typeorm';
-import { Booking, BookingStatus } from '../entity/booking.entity';
+import { BookingStatus } from '../entity/booking.entity';
 import { getDiffFromToday } from '../lib/date';
-import { SellerService } from '../seller/seller.service';
+import { SellerRepository } from '../seller/seller.repository';
+import { BookingRepository } from './booking.repository';
 
 @Injectable()
 export class BookingService {
   constructor(
-    @InjectRepository(Booking) private readonly bookingRepository: Repository<Booking>,
-    private readonly sellerService: SellerService,
+    private readonly sellerRepository: SellerRepository,
+    private readonly bookingRepository: BookingRepository,
   ) {}
 
   // TODO: 지난 날짜는 조회 불가능
@@ -25,7 +24,7 @@ export class BookingService {
       slots.set(targetDate.add(i, 'day').format('YYYY-MM-DD'), []);
     }
 
-    const sellers = await this.sellerService.getSellers();
+    const sellers = await this.sellerRepository.getSellers();
     for (const seller of sellers) {
       for (let i = 0; i < daysInMonth; i++) {
         const currentDate = targetDate.add(i, 'day');
@@ -54,7 +53,7 @@ export class BookingService {
       throw new BadRequestException('이미 예약된 시간입니다.');
     }
 
-    const seller = await this.sellerService.findOrThrow(sellerId);
+    const seller = await this.sellerRepository.findOrThrow(sellerId);
     if (seller.isOff(date)) {
       throw new BadRequestException('판매자의 휴무일입니다.');
     }
@@ -70,10 +69,7 @@ export class BookingService {
    * 수락/거절: 여행일 하루 전까지만 가능
    */
   async updateBookingStatus(bookingId: number, email: string, newStatus: BookingStatus) {
-    const booking = await this.bookingRepository.findOneBy({ id: bookingId, email });
-    if (!booking) {
-      throw new BadRequestException('예약 내역이 존재하지 않습니다.');
-    }
+    const booking = await this.bookingRepository.findOrThrow(bookingId, email);
     if (!booking.canTransitionTo(newStatus)) {
       throw new BadRequestException(`${booking.status} 상태에서는 ${newStatus}로 변경할 수 없습니다.}`);
     }
