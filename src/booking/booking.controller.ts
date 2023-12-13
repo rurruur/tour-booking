@@ -23,7 +23,7 @@ export class BookingController {
 
   @Post(':bookingId/cancel')
   @ApiOperation({ summary: '예약 취소' })
-  async cancelBooking(@Param('bookingId') bookingId: number, @Body() { email }: CancelBookingDto) {
+  async cancelBooking(@Param('bookingId') bookingId: string, @Body() { email }: CancelBookingDto) {
     return this.bookingService.cancelBooking(bookingId, email);
   }
 }

@@ -46,7 +46,7 @@ export class SellerService {
     return { ...user, ...off };
   }
 
-  async updateBookingStatus(sellerId: number, bookingId: number, status: BookingStatus) {
+  async updateBookingStatus(sellerId: number, bookingId: string, status: BookingStatus) {
     const booking = await this.bookingRepository.findOrThrow(bookingId, { sellerId });
 
     return this.bookingService.updateBookingStatus(booking, status);

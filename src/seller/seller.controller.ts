@@ -37,7 +37,7 @@ export class SellerController {
 
   @Patch('booking/:bookingId')
   @ApiOperation({ summary: '투어 예약 신청 수락/거절' })
-  async updateBookingStatus(@Param('bookingId') bookingId: number, @Body() { userId, status }: UpdateBookingStatusDto) {
+  async updateBookingStatus(@Param('bookingId') bookingId: string, @Body() { userId, status }: UpdateBookingStatusDto) {
     return this.sellerService.updateBookingStatus(userId, bookingId, status);
   }
 }

@@ -64,7 +64,7 @@ export class BookingService {
     return newBooking;
   }
 
-  async cancelBooking(bookingId: number, email: string) {
+  async cancelBooking(bookingId: string, email: string) {
     const booking = await this.bookingRepository.findOrThrow(bookingId, { email });
 
     return this.updateBookingStatus(booking, BookingStatus.CANCEL);
