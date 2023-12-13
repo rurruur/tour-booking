@@ -48,4 +48,12 @@ export class Seller {
     }
     return this.offDate.includes(date);
   }
+
+  /** 입력된 요일이 휴무인지 확인 */
+  isOffDay(day: string): boolean {
+    if (!this.offDay?.length) {
+      return false;
+    }
+    return this.offDay.includes(day);
+  }
 }

@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import { Repository } from 'typeorm';
 import { Booking } from '../entity/booking.entity';
 import { Seller } from '../entity/seller.entity';
+import { getDayOfWeek } from '../lib/date';
 
 @Injectable()
 export class BookingService {
@@ -30,7 +31,7 @@ export class BookingService {
         const currentDate = targetDate.add(i, 'day');
         const formattedDate = currentDate.format('YYYY-MM-DD');
 
-        if (!seller.isOffDate(formattedDate)) {
+        if (!seller.isOffDate(formattedDate) && !seller.isOffDay(getDayOfWeek(formattedDate))) {
           slots.get(formattedDate).push({ id: seller.id, name: seller.name });
         }
       }
