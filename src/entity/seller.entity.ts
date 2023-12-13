@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { getDayOfWeek } from '../lib/date';
 
 export enum OffDay {
   MON = 'MON',
@@ -41,6 +42,10 @@ export class Seller {
   @DeleteDateColumn({ nullable: true })
   deletedAt: Date;
 
+  isOff(date: string): boolean {
+    return this.isOffDate(date) || this.isOffDay(date);
+  }
+
   /** 입력된 날짜가 휴무일인지 확인 */
   isOffDate(date: string): boolean {
     if (!this.offDate?.length) {
@@ -49,8 +54,9 @@ export class Seller {
     return this.offDate.includes(date);
   }
 
-  /** 입력된 요일이 휴무인지 확인 */
-  isOffDay(day: string): boolean {
+  /** 입력된 날짜가 휴무 요일인지 확인 */
+  isOffDay(date: string): boolean {
+    const day = getDayOfWeek(date);
     if (!this.offDay?.length) {
       return false;
     }
