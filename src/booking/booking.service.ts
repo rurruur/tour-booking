@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
+import { In } from 'typeorm';
 import { Booking, BookingStatus } from '../entity/booking.entity';
 import { getDiffFromToday } from '../lib/date';
 import { SellerRepository } from '../seller/seller.repository';
@@ -48,7 +49,11 @@ export class BookingService {
       throw new BadRequestException('오늘 이전 날짜는 예약할 수 없습니다.');
     }
 
-    const prevBooking = await this.bookingRepository.findOneBy({ sellerId, date, email });
+    const prevBooking = await this.bookingRepository.findOneBy({
+      email,
+      date,
+      status: In([BookingStatus.PENDING, BookingStatus.APPROVED]),
+    });
     if (prevBooking) {
       throw new BadRequestException('이미 예약된 시간입니다.');
     }
