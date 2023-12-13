@@ -1,11 +1,5 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-
-export enum BookingStatus {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED',
-  CANCEL = 'CANCEL',
-}
+import { BookingStatus } from '../booking/booking.status';
 
 /** 예약 상태에 따라 변경 가능한 상태 목록 */
 const EditableStatus = {

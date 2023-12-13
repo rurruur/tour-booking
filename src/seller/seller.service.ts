@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { In, MoreThan } from 'typeorm';
 import { BookingRepository } from '../booking/booking.repository';
 import { BookingService } from '../booking/booking.service';
-import { BookingStatus } from '../entity/booking.entity';
+import { ActiveBookingStatus, BookingStatus } from '../booking/booking.status';
 import { SellerRepository } from './seller.repository';
 
 @Injectable()
@@ -62,7 +62,7 @@ export class SellerService {
     const bookings = await this.bookingRepository.findBy({
       sellerId: userId,
       date: MoreThan(dayjs().format('YYYY-MM-DD')),
-      status: In([BookingStatus.PENDING, BookingStatus.APPROVED]),
+      status: In(ActiveBookingStatus),
     });
     const [approvedBookings, pendingBookings] = _.partition(
       bookings.filter((b) => user.isOff(b.date)),

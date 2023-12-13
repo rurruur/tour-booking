@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
 import { In } from 'typeorm';
-import { Booking, BookingStatus } from '../entity/booking.entity';
+import { Booking } from '../entity/booking.entity';
 import { getDiffFromToday } from '../lib/date';
 import { SellerRepository } from '../seller/seller.repository';
 import { BookingRepository } from './booking.repository';
+import { ActiveBookingStatus, BookingStatus } from './booking.status';
 
 @Injectable()
 export class BookingService {
@@ -49,11 +50,7 @@ export class BookingService {
       throw new BadRequestException('오늘 이전 날짜는 예약할 수 없습니다.');
     }
 
-    const prevBooking = await this.bookingRepository.findOneBy({
-      email,
-      date,
-      status: In([BookingStatus.PENDING, BookingStatus.APPROVED]),
-    });
+    const prevBooking = await this.bookingRepository.findOneBy({ email, date, status: In(ActiveBookingStatus) });
     if (prevBooking) {
       throw new BadRequestException('이미 예약된 시간입니다.');
     }
@@ -64,11 +61,7 @@ export class BookingService {
     }
 
     const newBooking = this.bookingRepository.create({ sellerId, date, email, name });
-    const sellerBookings = await this.bookingRepository.findBy({
-      sellerId,
-      date,
-      status: In([BookingStatus.PENDING, BookingStatus.APPROVED]),
-    });
+    const sellerBookings = await this.bookingRepository.findBy({ sellerId, date, status: In(ActiveBookingStatus) });
     if (sellerBookings.length < seller.autoApprove) {
       newBooking.status = BookingStatus.APPROVED;
     }

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNumber } from 'class-validator';
-import { BookingStatus } from '../../entity/booking.entity';
+import { BookingStatus } from '../../booking/booking.status';
 
 export class UpdateBookingStatusDto {
   @ApiProperty()
