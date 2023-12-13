@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { BookingStatus } from '../entity/booking.entity';
 import { BookingService } from './booking.service';
+import { CancelBookingDto } from './dto/cancel-booking.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
 
 @Controller('booking')
@@ -14,5 +16,10 @@ export class BookingController {
   @Post()
   async createBooking(@Body() { sellerId, date, email, name }: CreateBookingDto) {
     return this.bookingService.createBooking(sellerId, date, email, name);
+  }
+
+  @Post('cancel')
+  async cancelBooking(@Body() { bookingId, email }: CancelBookingDto) {
+    return this.bookingService.updateBookingStatus(bookingId, email, BookingStatus.CANCEL);
   }
 }

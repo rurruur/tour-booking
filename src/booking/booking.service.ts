@@ -2,7 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import dayjs from 'dayjs';
 import { Repository } from 'typeorm';
-import { Booking } from '../entity/booking.entity';
+import { Booking, BookingStatus } from '../entity/booking.entity';
+import { getDiffFromToday } from '../lib/date';
 import { SellerService } from '../seller/seller.service';
 
 @Injectable()
@@ -62,5 +63,30 @@ export class BookingService {
     await this.bookingRepository.insert(newBooking);
 
     return newBooking;
+  }
+
+  /**
+   * 취소: 예약일 3일 전까지 가능
+   * 수락/거절: 여행일 하루 전까지만 가능
+   */
+  async updateBookingStatus(bookingId: number, email: string, newStatus: BookingStatus) {
+    const booking = await this.bookingRepository.findOneBy({ id: bookingId, email });
+    if (!booking) {
+      throw new BadRequestException('예약 내역이 존재하지 않습니다.');
+    }
+    if (!booking.canTransitionTo(newStatus)) {
+      throw new BadRequestException(`${booking.status} 상태에서는 ${newStatus}로 변경할 수 없습니다.}`);
+    }
+
+    if (newStatus === BookingStatus.CANCEL && getDiffFromToday(booking.date) < 3) {
+      throw new BadRequestException('취소는 예약일로부터 3일 전까지만 가능합니다.');
+    }
+    if (getDiffFromToday(booking.date) < 1) {
+      throw new BadRequestException('예약 상태 변경은 예약일로부터 1일 전까지만 가능합니다.');
+    }
+
+    await this.bookingRepository.update({ id: bookingId }, { status: newStatus });
+
+    return true;
   }
 }
