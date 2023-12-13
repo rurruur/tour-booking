@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { BookingModule } from './booking/booking.module';
@@ -18,6 +19,7 @@ import { SellerModule } from './seller/seller.module';
       synchronize: false,
       namingStrategy: new SnakeNamingStrategy(),
     }),
+    ScheduleModule.forRoot(),
     SellerModule,
     BookingModule,
   ],

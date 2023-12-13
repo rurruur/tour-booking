@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import dayjs from 'dayjs';
 import { In } from 'typeorm';
 import { Booking } from '../entity/booking.entity';
@@ -9,6 +9,8 @@ import { ActiveBookingStatus, BookingStatus } from './booking.status';
 
 @Injectable()
 export class BookingService {
+  private readonly logger = new Logger(BookingService.name);
+
   constructor(
     private readonly sellerRepository: SellerRepository,
     private readonly bookingRepository: BookingRepository,
@@ -96,5 +98,19 @@ export class BookingService {
     await this.bookingRepository.update({ id: booking.id }, { status: newStatus });
 
     return true;
+  }
+
+  /** 매일 자정에 대기중인 예약을 취소 처리 */
+  async cancelPendingBookings() {
+    const pendingBookings = (
+      await this.bookingRepository.findBy({
+        date: dayjs().format('YYYY-MM-DD'),
+        status: BookingStatus.PENDING,
+      })
+    ).map((b) => b.id);
+
+    await this.bookingRepository.update({ id: In(pendingBookings) }, { status: BookingStatus.REJECTED });
+
+    this.logger.log(`대기예약 자동 취소: ${pendingBookings}`);
   }
 }

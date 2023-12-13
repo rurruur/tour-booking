@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { BookingService } from './booking.service';
 import { CancelBookingDto } from './dto/cancel-booking.dto';
@@ -8,6 +9,11 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 @ApiTags('예약')
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
+
+  @Cron('0 0 0 * * *')
+  async cancelPendingBookings() {
+    await this.bookingService.cancelPendingBookings();
+  }
 
   @Get()
   @ApiOperation({ summary: '월 단위 예약 가능 일자 확인' })
