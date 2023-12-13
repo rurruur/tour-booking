@@ -48,8 +48,9 @@ export class SellerService {
    * @param offDay MON, TUE, WED, THU, FRI, SAT, SUN 형식의 요일 배열
    */
   async updateOff(userId: number, offDate?: string[], offDay?: string[]) {
+    const today = dayjs().format('YYYY-MM-DD');
+
     if (offDate?.length) {
-      const today = dayjs().format('YYYY-MM-DD');
       const isAfterToday = offDate.every((date) => dayjs(date).isAfter(today));
       if (!isAfterToday) {
         throw new BadRequestException('휴무일은 오늘 이후로만 지정 가능합니다.');
@@ -61,7 +62,7 @@ export class SellerService {
 
     const bookings = await this.bookingRepository.findBy({
       sellerId: userId,
-      date: MoreThan(dayjs().format('YYYY-MM-DD')),
+      date: MoreThan(today),
       status: In(ActiveBookingStatus),
     });
     const [approvedBookings, pendingBookings] = _.partition(
