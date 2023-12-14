@@ -1,4 +1,5 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { CacheInterceptor } from '@nestjs/cache-manager';
+import { BadRequestException, Injectable, Logger, UseInterceptors } from '@nestjs/common';
 import dayjs from 'dayjs';
 import { In } from 'typeorm';
 import { Booking } from '../entity/booking.entity';
@@ -17,6 +18,7 @@ export class BookingService {
   ) {}
 
   // TODO: 지난 날짜는 조회 불가능
+  @UseInterceptors(CacheInterceptor)
   async getAvailableSlot(year: number, month: number) {
     const targetDate = dayjs()
       .set('year', year)

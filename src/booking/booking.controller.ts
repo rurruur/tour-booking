@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseInterceptors } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { HttpCacheInterceptor } from '../interceptor/http-cache.interceptor';
 import { BookingService } from './booking.service';
 import { CancelBookingDto } from './dto/cancel-booking.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -16,6 +17,7 @@ export class BookingController {
   }
 
   @Get()
+  @UseInterceptors(HttpCacheInterceptor)
   @ApiOperation({ summary: '월 단위 예약 가능 일자 확인' })
   async getAvailableSlot(@Query('year') year: number, @Query('month') month: number) {
     return this.bookingService.getAvailableSlot(year, month);
