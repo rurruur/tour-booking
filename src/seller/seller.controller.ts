@@ -24,7 +24,7 @@ export class SellerController {
   async create(@Body() { email, name }: CreateSellerDto) {
     const user = await this.sellerService.create(email, name);
 
-    await this.cacheService.deleleteByPrefix('/booking');
+    await this.cacheService.deleleteByPrefix('/booking/slot');
 
     return user;
   }
@@ -40,7 +40,7 @@ export class SellerController {
   async updateOff(@Body() { sellerId, offDate, offDay }: UpdateOff) {
     await this.sellerService.updateOff(sellerId, offDate, offDay);
 
-    await this.cacheService.deleleteByPrefix('/booking');
+    await this.cacheService.deleleteByPrefix('/booking/slot');
 
     return true;
   }

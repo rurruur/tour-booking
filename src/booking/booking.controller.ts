@@ -16,17 +16,17 @@ export class BookingController {
     await this.bookingService.cancelPendingBookings();
   }
 
-  @Get()
-  @UseInterceptors(HttpCacheInterceptor)
-  @ApiOperation({ summary: '월 단위 예약 가능 일자 확인' })
-  async getAvailableSlot(@Query('year') year: number, @Query('month') month: number) {
-    return this.bookingService.getAvailableSlot(year, month);
-  }
-
   @Post()
   @ApiOperation({ summary: '예약 생성' })
   async createBooking(@Body() { sellerId, date, email, name }: CreateBookingDto) {
     return this.bookingService.createBooking(sellerId, date, email, name);
+  }
+
+  @Get('slot')
+  @UseInterceptors(HttpCacheInterceptor)
+  @ApiOperation({ summary: '월 단위 예약 가능 일자 확인' })
+  async getAvailableSlot(@Query('year') year: number, @Query('month') month: number) {
+    return this.bookingService.getAvailableSlot(year, month);
   }
 
   @Post(':bookingId/cancel')
