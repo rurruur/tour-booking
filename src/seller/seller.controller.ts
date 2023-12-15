@@ -39,7 +39,6 @@ export class SellerController {
   @ApiOperation({ summary: '휴무일 수정' })
   async updateOff(@Body() { sellerId, offDate, offDay }: UpdateOff) {
     await this.sellerService.updateOff(sellerId, offDate, offDay);
-
     await this.cacheService.deleleteByPrefix('/booking/slot');
 
     return true;
@@ -57,6 +56,9 @@ export class SellerController {
   @Patch('activate')
   @ApiOperation({ summary: '판매자 활성화 여부 수정' })
   async updateActivationStatus(@Body() { sellerId, isActive }: UpdateActiveDto) {
-    return this.sellerService.updateActivationStatus(sellerId, isActive);
+    await this.sellerService.updateActivationStatus(sellerId, isActive);
+    await this.cacheService.deleleteByPrefix('/booking/slot');
+
+    return true;
   }
 }
