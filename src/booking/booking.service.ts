@@ -58,7 +58,7 @@ export class BookingService {
    * 신청한 이메일로 동일 날짜에 예약한 내역이 있을 경우 오류 발생
    */
   async createBooking(sellerId: number, date: string, email: string, name: string) {
-    if (dayjs(date).isBefore(dayjs(), 'day')) {
+    if (dayjs(date).isBefore(dayjs(), 'day') || dayjs(date).isSame(dayjs(), 'day')) {
       throw new BadRequestException('오늘 이전 날짜는 예약할 수 없습니다.');
     }
 
