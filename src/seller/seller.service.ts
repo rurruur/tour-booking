@@ -93,4 +93,11 @@ export class SellerService {
 
     return user;
   }
+
+  async getSeller(sellerId: number) {
+    const user = await this.sellerRepository.findOrThrow(sellerId);
+    const bookings = await this.bookingRepository.findBy({ sellerId });
+
+    return { ...user, bookings };
+  }
 }

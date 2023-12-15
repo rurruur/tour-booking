@@ -61,4 +61,10 @@ export class SellerController {
 
     return true;
   }
+
+  @Get(':sellerId')
+  @ApiOperation({ summary: '판매자 상세 조회' })
+  async getSeller(@Param('sellerId') sellerId: number) {
+    return this.sellerService.getSeller(sellerId);
+  }
 }
