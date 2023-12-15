@@ -13,6 +13,10 @@
 
 서버 시작 후 `localhost:3000/api` 접속
 
+### Insomnia
+
+[insomnia.json](insomnia.json) 파일을 import하여 사용
+
 ## 기능
 
 ### 판매자
