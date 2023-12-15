@@ -9,7 +9,9 @@ export class CacheService {
   async deleleteByPrefix(prefix: string) {
     const keys = await this.getKeysByPrefix(prefix);
 
-    return this.cacheManager.store.mdel(...keys);
+    if (keys.length) {
+      await this.cacheManager.store.mdel(...keys);
+    }
   }
 
   async getKeysByPrefix(prefix: string) {
