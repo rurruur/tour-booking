@@ -31,7 +31,8 @@ export class Seller {
   @Column({ type: 'json', nullable: true, default: null })
   offDay: string[];
 
-  // TODO: 활성화/비활성화 기능 추가
+  @Column({ type: 'boolean', default: true })
+  isActive: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

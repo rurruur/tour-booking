@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CacheService } from '../cache.service';
 import { CreateSellerDto } from './dto/create-seller.dto';
+import { UpdateActiveDto } from './dto/update-active.dto';
 import { UpdateAutoApprove } from './dto/update-auto-approve.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking.dto';
 import { UpdateOff } from './dto/update-off.dto';
@@ -48,5 +49,11 @@ export class SellerController {
   @ApiOperation({ summary: '투어 예약 신청 수락/거절' })
   async updateBookingStatus(@Param('bookingId') bookingId: string, @Body() { userId, status }: UpdateBookingStatusDto) {
     return this.sellerService.updateBookingStatus(userId, bookingId, status);
+  }
+
+  @Patch('activate')
+  @ApiOperation({ summary: '판매자 활성화 여부 수정' })
+  async updateActivationStatus(@Body() { sellerId, isActive }: UpdateActiveDto) {
+    return this.sellerService.updateActivationStatus(sellerId, isActive);
   }
 }

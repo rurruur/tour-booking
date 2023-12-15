@@ -84,4 +84,13 @@ export class SellerService {
 
     return this.bookingService.updateBookingStatus(booking, status);
   }
+
+  async updateActivationStatus(sellerId: number, isActive: boolean) {
+    const user = await this.sellerRepository.findOrThrow(sellerId);
+
+    user.isActive = isActive;
+    await this.sellerRepository.update({ id: sellerId }, { isActive });
+
+    return user;
+  }
 }
