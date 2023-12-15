@@ -17,14 +17,22 @@ export class BookingService {
     private readonly bookingRepository: BookingRepository,
   ) {}
 
-  // TODO: 지난 날짜는 조회 불가능
+  /**
+   * 오늘 이전 날짜는 조회할 수 없음
+   */
   @UseInterceptors(CacheInterceptor)
   async getAvailableSlot(year: number, month: number) {
+    const today = dayjs().format('YYYYMM');
+    if (today > `${year}${month}`) {
+      throw new BadRequestException('지난 기간은 조회할 수 없습니다.');
+    }
+
+    const startDate = today === `${year}${month}` ? dayjs().date() + 1 : 1;
     const targetDate = dayjs()
       .set('year', year)
       .set('month', month - 1)
-      .set('date', 1);
-    const daysInMonth = targetDate.daysInMonth();
+      .set('date', startDate);
+    const daysInMonth = targetDate.daysInMonth() - startDate + 1;
     const slots = new Map<string, { id: number; name: string }[]>();
     for (let i = 0; i < daysInMonth; i++) {
       slots.set(targetDate.add(i, 'day').format('YYYY-MM-DD'), []);
