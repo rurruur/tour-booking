@@ -9,8 +9,8 @@ export class SellerRepository extends Repository<Seller> {
     super(repository.target, repository.manager, repository.queryRunner);
   }
 
-  async findOrThrow(userId: number) {
-    const user = await this.findOneBy({ id: userId });
+  async findOrThrow(id: number) {
+    const user = await this.findOneBy({ id });
     if (!user) {
       throw new BadRequestException('존재하지 않는 사용자입니다.');
     }

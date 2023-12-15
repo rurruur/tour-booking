@@ -5,7 +5,7 @@ import { BookingStatus } from '../../booking/booking.status';
 export class UpdateBookingStatusDto {
   @ApiProperty()
   @IsNumber()
-  userId: number;
+  sellerId: number;
 
   @ApiProperty({ enum: [BookingStatus.APPROVED, BookingStatus.REJECTED] })
   @IsEnum([BookingStatus.APPROVED, BookingStatus.REJECTED])

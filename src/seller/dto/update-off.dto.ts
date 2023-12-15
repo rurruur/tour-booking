@@ -6,7 +6,7 @@ import { IsDateFormatValid } from '../../validation/off-date.validation';
 export class UpdateOff {
   @ApiProperty()
   @IsNumber()
-  userId: number;
+  sellerId: number;
 
   @ApiProperty({ description: '휴무일', format: 'YYYY-MM-DD' })
   @IsArray()

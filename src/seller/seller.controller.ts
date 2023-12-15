@@ -31,14 +31,14 @@ export class SellerController {
 
   @Patch('auto-approve')
   @ApiOperation({ summary: '예약 자동승인 횟수 수정' })
-  async updateAutoApprove(@Body() { userId, autoApprove }: UpdateAutoApprove) {
-    return this.sellerService.updateAutoApprove(userId, autoApprove);
+  async updateAutoApprove(@Body() { sellerId, autoApprove }: UpdateAutoApprove) {
+    return this.sellerService.updateAutoApprove(sellerId, autoApprove);
   }
 
   @Patch('off')
   @ApiOperation({ summary: '휴무일 수정' })
-  async updateOff(@Body() { userId, offDate, offDay }: UpdateOff) {
-    await this.sellerService.updateOff(userId, offDate, offDay);
+  async updateOff(@Body() { sellerId, offDate, offDay }: UpdateOff) {
+    await this.sellerService.updateOff(sellerId, offDate, offDay);
 
     await this.cacheService.deleleteByPrefix('/booking');
 
@@ -47,8 +47,11 @@ export class SellerController {
 
   @Patch('booking/:bookingId')
   @ApiOperation({ summary: '투어 예약 신청 수락/거절' })
-  async updateBookingStatus(@Param('bookingId') bookingId: string, @Body() { userId, status }: UpdateBookingStatusDto) {
-    return this.sellerService.updateBookingStatus(userId, bookingId, status);
+  async updateBookingStatus(
+    @Param('bookingId') bookingId: string,
+    @Body() { sellerId, status }: UpdateBookingStatusDto,
+  ) {
+    return this.sellerService.updateBookingStatus(sellerId, bookingId, status);
   }
 
   @Patch('activate')

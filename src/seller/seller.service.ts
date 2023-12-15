@@ -31,11 +31,11 @@ export class SellerService {
     return user;
   }
 
-  async updateAutoApprove(userId: number, autoApprove: number) {
-    const user = await this.sellerRepository.findOrThrow(userId);
+  async updateAutoApprove(sellerId: number, autoApprove: number) {
+    const user = await this.sellerRepository.findOrThrow(sellerId);
 
     user.autoApprove = autoApprove;
-    await this.sellerRepository.update({ id: userId }, { autoApprove });
+    await this.sellerRepository.update({ id: sellerId }, { autoApprove });
 
     return user;
   }
@@ -47,7 +47,7 @@ export class SellerService {
    * @param offDate YYYY-MM-DD 형식의 날짜 배열
    * @param offDay MON, TUE, WED, THU, FRI, SAT, SUN 형식의 요일 배열
    */
-  async updateOff(userId: number, offDate?: string[], offDay?: string[]) {
+  async updateOff(sellerId: number, offDate?: string[], offDay?: string[]) {
     const today = dayjs().format('YYYY-MM-DD');
 
     if (offDate?.length) {
@@ -57,11 +57,11 @@ export class SellerService {
       }
     }
 
-    const user = await this.sellerRepository.findOrThrow(userId);
+    const user = await this.sellerRepository.findOrThrow(sellerId);
     Object.assign(user, { ...(offDate?.length && { offDate }), ...(offDay?.length && { offDay }) });
 
     const bookings = await this.bookingRepository.findBy({
-      sellerId: userId,
+      sellerId: sellerId,
       date: MoreThan(today),
       status: In(ActiveBookingStatus),
     });
@@ -74,7 +74,7 @@ export class SellerService {
     }
     await Promise.all(pendingBookings.map((b) => this.bookingService.updateBookingStatus(b, BookingStatus.REJECTED)));
 
-    await this.sellerRepository.update({ id: userId }, user);
+    await this.sellerRepository.update({ id: sellerId }, user);
 
     return user;
   }
