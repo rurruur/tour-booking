@@ -16,3 +16,10 @@ services:
 
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  booking_redis:
+    image: redis:6.0.9
+    restart: always
+
+    ports:
+      - 6379:6379
