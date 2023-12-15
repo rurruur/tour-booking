@@ -21,4 +21,8 @@ export class SellerRepository extends Repository<Seller> {
   async getSellers() {
     return this.find();
   }
+
+  async getActiveSellers() {
+    return this.findBy({ isActive: true });
+  }
 }

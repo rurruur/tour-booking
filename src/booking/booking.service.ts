@@ -38,7 +38,7 @@ export class BookingService {
       slots.set(targetDate.add(i, 'day').format('YYYY-MM-DD'), []);
     }
 
-    const sellers = await this.sellerRepository.getSellers();
+    const sellers = await this.sellerRepository.getActiveSellers();
     for (const seller of sellers) {
       for (let i = 0; i < daysInMonth; i++) {
         const currentDate = targetDate.add(i, 'day');
