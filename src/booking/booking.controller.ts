@@ -16,6 +16,12 @@ export class BookingController {
     await this.bookingService.cancelPendingBookings();
   }
 
+  @Get()
+  @ApiOperation({ summary: '예약 목록 조회' })
+  async getBookings(@Query('email') email: string) {
+    return this.bookingService.getBookings(email);
+  }
+
   @Post()
   @ApiOperation({ summary: '예약 생성' })
   async createBooking(@Body() { sellerId, date, email, name }: CreateBookingDto) {

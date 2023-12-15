@@ -17,6 +17,10 @@ export class BookingService {
     private readonly bookingRepository: BookingRepository,
   ) {}
 
+  async getBookings(email: string) {
+    return this.bookingRepository.findBy({ email });
+  }
+
   /**
    * 오늘 이전 날짜는 조회할 수 없음
    */
