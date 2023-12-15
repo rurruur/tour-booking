@@ -71,6 +71,9 @@ export class BookingService {
     if (seller.isOff(date)) {
       throw new BadRequestException('판매자의 휴무일입니다.');
     }
+    if (!seller.isActive) {
+      throw new BadRequestException('판매자가 비활성화 상태입니다.');
+    }
 
     const newBooking = this.bookingRepository.create({ sellerId, date, email, name });
     const sellerBookings = await this.bookingRepository.findBy({ sellerId, date, status: In(ActiveBookingStatus) });
