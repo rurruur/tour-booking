@@ -11,6 +11,7 @@ CREATE TABLE `seller` (
   `auto_approve` int NOT NULL DEFAULT 5 COMMENT '자동승인횟수',
 	`off_date` json COMMENT '휴일(YYYY-MM-DD)',
 	`off_day` json COMMENT '휴일(요일)',
+	`is_active` boolean NOT NULL DEFAULT true COMMENT '활성화여부',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` timestamp,
